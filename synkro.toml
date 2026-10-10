@@ -1,0 +1,18 @@
+# Created by `synkro init`. This file makes the directory a Synkro project:
+# every session started under it is enforced by the rules declared here.
+# Edit freely. Set `enabled = false` to turn Synkro off for this project.
+schema_version = 1
+
+[dependencies.cwe-baseline]
+source = "git"
+url = "https://github.com/synkro-sh/standards.git"
+rev = "96a6ae2b501e5ebe4f8bb4133938a13d7558b85f"
+path = "cwe-baseline"
+
+[dependencies.synkro_test]
+source = "path"
+path = ".synkro/policy"
+
+[dependencies.user]
+source = "path"
+path = "/Users/stephanotsutsumi/.synkro/policy"

@@ -1,0 +1,22 @@
+schema_version = 1
+id = "sql-injection-string-concat"
+title = "SQL query built by string concatenation"
+description = "Building a SQL statement by concatenating or interpolating a variable (CWE-89) lets any value that reaches the string change the query's structure, not just its data."
+mode = "block"
+severity = "high"
+remediation = "Use a parameterized query or prepared statement; never splice variables into SQL text."
+metadata = { cwe = "CWE-89" }
+evaluation = { kind = "deterministic", predicate = { kind = "content_regex", path_glob = "**/*", pattern = "(?i)(execute|query)\\s*\\(\\s*(\"|'|`)?\\s*(SELECT|INSERT|UPDATE|DELETE)\\b[^;]*(\\+|\\$\\{)", requires_full_content = false } }
+
+[[examples]]
+expected = "violation"
+input = { kind = "content", path = "src/db.py", content = "cursor.execute(\"SELECT * FROM users WHERE id = \" + user_id)", coverage = "fragment" }
+
+[[examples]]
+expected = "violation"
+input = { kind = "content", path = "src/db.js", content = "db.query(`SELECT * FROM users WHERE id = ${userId}`)", coverage = "fragment" }
+
+[[examples]]
+expected = "ok"
+note = "Parameterized placeholders keep the query structure fixed."
+input = { kind = "content", path = "src/db.py", content = "cursor.execute(\"SELECT * FROM users WHERE id = %s\", (user_id,))", coverage = "fragment" }

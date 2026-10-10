@@ -1,0 +1,21 @@
+schema_version = 1
+id = "overly-permissive-chmod"
+title = "World-writable file permissions"
+description = "Granting world write access (mode 777/666) lets any local user or process modify the file, which defeats the point of a permission check."
+mode = "block"
+severity = "medium"
+remediation = "Grant the minimum permissions the file actually needs, e.g. 644 for files or 755 for executables/directories."
+evaluation = { kind = "deterministic", predicate = { kind = "content_regex", path_glob = "**/*", pattern = "chmod\\s+(-R\\s+)?0?(777|666)\\b", requires_full_content = false } }
+
+[[examples]]
+expected = "violation"
+input = { kind = "content", path = "deploy.sh", content = "chmod 777 /var/www/uploads", coverage = "fragment" }
+
+[[examples]]
+expected = "violation"
+input = { kind = "content", path = "Dockerfile", content = "RUN chmod -R 666 /app/data", coverage = "fragment" }
+
+[[examples]]
+expected = "ok"
+note = "644 grants owner write and read-only to everyone else."
+input = { kind = "content", path = "deploy.sh", content = "chmod 644 /var/www/uploads/report.csv", coverage = "fragment" }

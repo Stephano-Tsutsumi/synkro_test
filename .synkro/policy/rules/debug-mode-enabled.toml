@@ -1,0 +1,21 @@
+schema_version = 1
+id = "debug-mode-enabled"
+title = "Debug mode left enabled"
+description = "Debug mode left on in application config exposes stack traces, source paths, and sometimes an interactive debugger to anyone who can trigger an error."
+mode = "flag"
+severity = "medium"
+remediation = "Set debug off by default and enable it only via a local, untracked override."
+evaluation = { kind = "deterministic", predicate = { kind = "content_regex", path_glob = "**/*", pattern = "(?i)\\b(DEBUG|debug_mode)\\s*[:=]\\s*(True|true|1)\\b", requires_full_content = false } }
+
+[[examples]]
+expected = "violation"
+input = { kind = "content", path = "settings.py", content = "DEBUG = True", coverage = "fragment" }
+
+[[examples]]
+expected = "violation"
+input = { kind = "content", path = "config.yaml", content = "debug_mode: true", coverage = "fragment" }
+
+[[examples]]
+expected = "ok"
+note = "Debug disabled is the safe default."
+input = { kind = "content", path = "settings.py", content = "DEBUG = False", coverage = "fragment" }
