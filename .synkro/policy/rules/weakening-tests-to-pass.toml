@@ -1,0 +1,27 @@
+schema_version = 3
+id = "weakening-tests-to-pass"
+title = "Test weakened or disabled to force a pass"
+description = "An edit to an existing test deletes or loosens its assertions, comments the test out, marks it skipped/pending, or changes its expected value to match broken behavior from the code under test, rather than fixing the underlying code, so the test stops verifying the behavior it was written to catch."
+mode = "ask"
+severity = "high"
+evaluation = { kind = "semantic" }
+
+[[examples]]
+expected = "violation"
+input = { kind = "content", path = "tests/test_billing.py", content = "- assert total == 42\n+ # assert total == 42\n+ pass  # TODO: fix later", coverage = "fragment" }
+note = "Failing assertion commented out instead of fixing the underlying bug."
+
+[[examples]]
+expected = "violation"
+input = { kind = "content", path = "tests/auth.test.js", content = "test.skip('rejects invalid token', () => {\n  expect(login('bad-token')).rejects.toThrow()\n})", coverage = "fragment" }
+note = "A previously-enabled test is marked skipped to get CI green."
+
+[[examples]]
+expected = "ok"
+input = { kind = "content", path = "tests/test_billing.py", content = "assert total == 45  # updated after fixing rounding bug in calculate_total, see #412", coverage = "fragment" }
+note = "Expected value changed to match a reviewed, intentional behavior fix with a reference."
+
+[[examples]]
+expected = "ok"
+input = { kind = "content", path = "tests/test_discounts.py", content = "def test_discount_applied():\n    assert apply_discount(100, 0.1) == 90", coverage = "fragment" }
+note = "A brand-new test being added, not an existing one being weakened."

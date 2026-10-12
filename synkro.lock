@@ -5,7 +5,7 @@
 schema_version = 2
 synkro_version = "0.2.0-rc.15 (bcddea4)"
 manifest_digest = "sha256:21bcd4dd64db4df2ee91db67ae1194a6211050af19c580e402dec0ec27285440"
-ruleset_digest = "sha256:7ea3329590b0db97abbb99b6bfc4b12e9ddcd3643cf4eaac5d58295fd70cfc6f"
+ruleset_digest = "sha256:164e185562c84bea41fb5969ee50dc5f55a9666c6109df3d84068bb7f0d74e4a"
 
 [[packages]]
 dependency = "cwe-baseline"
@@ -39,7 +39,8 @@ digest = "sha256:307540af5945364bf1dd0e3780eae8268ee2cfb1942f1dc184e66e958e8437e
 [[packages]]
 dependency = "synkro_test"
 name = "synkro_test"
-digest = "sha256:84cb8f000078d87aa49c29fdc0a7a0c357888186f82aae6f582d6b71eb8a51d7"
+digest = "sha256:f1b6a0e4ceba1c48fa70bd0d90e73b97845c76f1c9f9c280110986818516555b"
+head_commit = "9be6c655c9b957708404adf402311f8f20dcd949"
 dirty = true
 
 [packages.source]
@@ -51,12 +52,28 @@ id = "debug-mode-enabled"
 digest = "sha256:c28e56537415568744c8b4f485408207eef15ce92888cdd5dd9d7223db434d57"
 
 [[packages.rules]]
+id = "destructive-data-operation-without-safeguard"
+digest = "sha256:5607d5d7d4a8426e4583478e9611f3233a866d9d7db289b96dc93d193fb7277f"
+
+[[packages.rules]]
+id = "missing-error-handling-on-network-call"
+digest = "sha256:392dc1c725a49e719ff7fc8bdcd7cac88c16eb8e29230a9517ebcbb5b8dc6355"
+
+[[packages.rules]]
+id = "non-obvious-secret-or-pii-in-code"
+digest = "sha256:0f3ac3e7389e3fef0361d8e43495ebac88115f236a386ce88d68e8febe1c25d9"
+
+[[packages.rules]]
 id = "overly-permissive-chmod"
 digest = "sha256:63adccfc68185edc5450101cbfda2240922b2ae6c21fc9f99d5a7f542661a743"
 
 [[packages.rules]]
 id = "sql-injection-string-concat"
 digest = "sha256:4a33c35f1c5105b3948cb81aa0d7b4d3fe1a87fe9d1a21717825ceba56bccbaf"
+
+[[packages.rules]]
+id = "weakening-tests-to-pass"
+digest = "sha256:94e2ea5601fd02a1d23df9b30527dfd5194fbef1433026a8186df5e5d7cc2247"
 
 [[packages]]
 dependency = "user"

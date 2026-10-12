@@ -1,0 +1,27 @@
+schema_version = 3
+id = "destructive-data-operation-without-safeguard"
+title = "Irreversible data deletion without a safeguard"
+description = "Code or a migration performs an irreversible, broad data-destroying operation, such as dropping a table, truncating a table, or deleting rows with no narrow WHERE clause, with no accompanying safeguard such as a backup step, a dry-run/confirmation flag, or a reversible down-migration, in a context where the loss cannot be undone."
+mode = "ask"
+severity = "high"
+evaluation = { kind = "semantic" }
+
+[[examples]]
+expected = "violation"
+input = { kind = "content", path = "migrations/0032_cleanup.sql", content = "DROP TABLE users_legacy;", coverage = "fragment" }
+note = "No backup noted and the down-migration does not restore the table."
+
+[[examples]]
+expected = "violation"
+input = { kind = "content", path = "scripts/cleanup.py", content = "cursor.execute(\"DELETE FROM sessions\")", coverage = "fragment" }
+note = "Deletes every row, no WHERE clause, no confirmation step."
+
+[[examples]]
+expected = "ok"
+input = { kind = "content", path = "migrations/0032_cleanup.sql", content = "-- Backed up to users_legacy_archive before this migration; see runbook.\nDROP TABLE users_legacy;", coverage = "fragment" }
+note = "Explicit backup safeguard is noted before the destructive step."
+
+[[examples]]
+expected = "ok"
+input = { kind = "content", path = "scripts/cleanup.py", content = "cursor.execute(\"DELETE FROM sessions WHERE expires_at < %s\", (cutoff,))", coverage = "fragment" }
+note = "Scoped delete with a narrow WHERE clause is routine cleanup, not a broad destructive operation."

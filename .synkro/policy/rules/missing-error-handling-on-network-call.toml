@@ -1,0 +1,27 @@
+schema_version = 3
+id = "missing-error-handling-on-network-call"
+title = "Network call without error handling"
+description = "A newly added network or external API call (HTTP request, RPC, webhook) has no error handling: no try/catch, no .catch(), and no check of the response status before using it. A failure, timeout, or non-2xx response is then silently ignored or crashes unhandled instead of being handled deliberately."
+mode = "flag"
+severity = "medium"
+evaluation = { kind = "semantic" }
+
+[[examples]]
+expected = "violation"
+input = { kind = "content", path = "src/api/client.js", content = "async function getUser(id) {\n  const res = await fetch(`/api/users/${id}`)\n  return res.json()\n}", coverage = "fragment" }
+note = "No status check and no try/catch around the fetch or the json parse."
+
+[[examples]]
+expected = "violation"
+input = { kind = "content", path = "src/billing/charge.py", content = "response = requests.post(url, json=payload)\ndata = response.json()\nreturn data[\"charge_id\"]", coverage = "fragment" }
+note = "No exception handling and no status check before trusting the response body."
+
+[[examples]]
+expected = "ok"
+input = { kind = "content", path = "src/api/client.js", content = "async function getUser(id) {\n  try {\n    const res = await fetch(`/api/users/${id}`)\n    if (!res.ok) throw new Error(`request failed: ${res.status}`)\n    return await res.json()\n  } catch (err) {\n    logger.error('getUser failed', err)\n    throw err\n  }\n}", coverage = "fragment" }
+note = "Status is checked and failures are caught and logged."
+
+[[examples]]
+expected = "ok"
+input = { kind = "content", path = "src/util/math.js", content = "function add(a, b) {\n  return a + b\n}", coverage = "fragment" }
+note = "Pure local computation, no network call, out of scope for this Rule."
